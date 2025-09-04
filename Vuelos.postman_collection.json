@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "f733915d-073f-46f8-8bb6-3bc6a4669019",
+		"name": "Vuelos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47428727",
+		"_collection_link": "https://pablocorroto-1502484.postman.co/workspace/Pablo's-Workspace~c66f8b48-0d04-446c-84fa-8db5c9d51db3/collection/47428727-f733915d-073f-46f8-8bb6-3bc6a4669019?action=share&source=collection_link&creator=47428727"
+	},
+	"item": [
+		{
+			"name": "GET - Listar (sin filtros)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Es un array\", () => Array.isArray(pm.response.json()));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/vuelos",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"vuelos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET - Listar con filtros + ordenarPor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+							"const arr = pm.response.json();",
+							"pm.test(\"Al menos 1 resultado\", () => arr.length >= 1);",
+							"pm.test(\"Campos presentes\", () => {",
+							"  const v = arr[0];",
+							"  pm.expect(v).to.have.keys([\"id\",\"nombreVuelo\",\"empresa\",\"lugarSalida\",\"lugarLlegada\",\"fechaSalida\",\"fechaLlegada\",\"duracionDias\"]);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/vuelos?empresa=Ryanair&lugarLlegada=Bilbao&fechaSalida=2025-10-07&ordenarPor=empresa",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"vuelos"
+					],
+					"query": [
+						{
+							"key": "empresa",
+							"value": "Ryanair"
+						},
+						{
+							"key": "lugarLlegada",
+							"value": "Bilbao"
+						},
+						{
+							"key": "fechaSalida",
+							"value": "2025-10-07"
+						},
+						{
+							"key": "ordenarPor",
+							"value": "empresa"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET - Obtener por id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+							"const v = pm.response.json();",
+							"pm.test(\"Tiene id=1\", () => pm.expect(v.id).to.eql(1));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/vuelos/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"vuelos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST - Crear",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"201 Created\", () => pm.response.to.have.status(201));",
+							"pm.test(\"Location presente\", () => pm.expect(pm.response.headers.get('Location')).to.be.a('string'));",
+							"const v = pm.response.json();",
+							"pm.test(\"Campos presentes\", () => pm.expect(v).to.have.property('id'));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombreVuelo\": \"H011-V\",\n  \"empresa\": \"Iberia\",\n  \"lugarSalida\": \"Madrid\",\n  \"lugarLlegada\": \"Roma\",\n  \"fechaSalida\": \"2026-08-20\",\n  \"fechaLlegada\": \"2026-08-20\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/vuelos",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"vuelos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT - Actualizar por id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+							"const v = pm.response.json();",
+							"pm.test(\"id sigue siendo 1\", () => pm.expect(v.id).to.eql(1));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombreVuelo\": \"H001-V\",\n  \"empresa\": \"Ryanair\",\n  \"lugarSalida\": \"A Coruña\",\n  \"lugarLlegada\": \"Bilbao\",\n  \"fechaSalida\": \"2025-10-09\",\n  \"fechaLlegada\": \"2025-10-09\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/vuelos/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"vuelos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE - Eliminar por id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"204 No Content\", () => pm.response.to.have.status(204));"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/vuelos/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"vuelos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080"
+		}
+	]
+}
